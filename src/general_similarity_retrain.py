@@ -84,6 +84,8 @@ def update_model_param_grads(optimizer, model_params_map, params_to_keep, grads_
     if params_to_keep is not None: 
         for param_name, indices in params_to_keep: 
             param = model_params_map[param_name]
+            if param.grad is None:
+                param.grad = torch.zeros_like(param)
             if indices is None: 
                 new_grad = new_grad_calc(grads_1[param_name], grads_2[param_name])
                 param.grad.data.copy_(new_grad.data)
@@ -93,6 +95,8 @@ def update_model_param_grads(optimizer, model_params_map, params_to_keep, grads_
     else: 
         for param_name, param in model_params_map.items(): 
             if grads_1[param_name] is not None and grads_2[param_name] is not None: 
+                if param.grad is None:
+                    param.grad = torch.zeros_like(param)
                 new_grad = new_grad_calc(grads_1[param_name], grads_2[param_name])
                 param.grad.data.copy_(new_grad.data)
 
